@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysd.dao.BookDao">
+	<select id="selectBookcate" resultType="bookcate">
+		select * from bookcate;
+	</select>
+	<resultMap type="books" id="bookCon">
+		<id column="bid" property="bid" />
+		<result column="bname" property="bname" />
+		<result column="sale" property="sale" />
+		<result column="author" property="author" />
+		<result column="jianjie" property="jianjie" />
+		<result column="tuijian" property="tuijian" />
+		<result column="bcid" property="bookcate.bcid" />
+		<result column="bcname" property="bookcate.bcname" />
+
+	</resultMap>
+	<select id="selectAll" parameterType="books" resultMap="bookCon">
+		select b.*,bc.bcname from books b inner join bookcate bc on
+		b.bcid=bc.bcid
+		<where>
+			<if test="bname!=null and bname!=''">
+				and bname like "%"#{bname}"%"
+			</if>
+			<if test="bookcate.bcid>0">
+				and bc.bcid=#{bookcate.bcid}
+			</if>
+			<if test="sale!=null and sale!=''">
+				and sale &gt; #{sale}
+			</if>
+			<if test="esale!=null and esale!=''">
+				and sale &lt; #{esale}
+			</if>
+		</where>
+		limit #{page},#{rows}
+	</select>
+	<select id="selectAllCount" parameterType="books"
+		resultType="int">
+		select count(1) from books b inner join bookcate bc on
+		b.bcid=bc.bcid
+		<where>
+			<if test="bname!=null and bname!=''">
+				and bname like "%"#{bname}"%"
+			</if>
+			<if test="bookcate.bcid>0">
+				and bc.bcid=#{bookcate.bcid}
+			</if>
+			<if test="sale!=null and sale!=''">
+				and sale &gt; #{sale}
+			</if>
+			<if test="esale!=null and esale!=''">
+				and sale &lt; #{esale}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteBooks" parameterType="int">
+		delete from books where bid=#{bid}
+	</delete>
+	<update id="updateBooks" parameterType="books">
+		update books
+		<set>
+			<if test="bname !=null and bname!=''">
+				bname=#{bname},
+			</if>
+			<if test="sale !=null and sale!=''">
+				sale=#{sale},
+			</if>
+			<if test="bookcate.bcid>0">
+				bcid=#{bookcate.bcid},
+			</if>
+			<if test="author !=null and author!=''">
+				author=#{author},
+			</if>
+
+			<if test="tuijian !=null and tuijian!=''">
+				tuijian=#{tuijian},
+			</if>
+			<if test="jianjie !=null and jianjie!=''">
+				jianjie=#{jianjie},
+			</if>
+		</set>
+		<where>
+			<if test="bid !=null and`2
+			 bid!=''">
+				bid=#{bid}
+			</if>
+		</where>
+	</update>
+	<insert id="insertBooks" parameterType="books">
+	
+	insert into books (bname,sale,author,jianjie,tuijian,bcid)
+	values(#{bname},#{sale},#{author},#{jianjie},#{tuijian},#{bookcate.bcid})
+	</insert>
+</mapper>
